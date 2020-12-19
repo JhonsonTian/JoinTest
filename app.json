@@ -1,0 +1,12 @@
+{
+  "name": "JoinTest",
+  "displayName": "JoinTest",
+  "expo": {
+    "name": "JoinTest",
+    "slug": "JoinTest",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
