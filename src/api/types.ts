@@ -1,6 +1,7 @@
 export type ApiReturn<T> = {
   error: boolean;
   data?: T;
+  message?: string;
 };
 
 export type LoginParam = {
@@ -13,6 +14,7 @@ export type LoginReturn = {
   expires_in: number;
   access_token: string;
   refresh_token: string;
+  message?: string;
 };
 
 export type GetRawMaterialParam = {
@@ -101,6 +103,7 @@ export type RawMaterialReturn = {
   meta: Meta;
   links: Links;
   data: RawMaterial[];
+  message?: string;
 };
 
 type Roles = {
@@ -134,4 +137,5 @@ export type User = {
 
 export type CurrentUser = {
   user: User;
+  message?: string;
 };

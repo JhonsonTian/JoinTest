@@ -56,9 +56,12 @@ export const login = (data: LoginParam): Promise<ApiReturn<LoginReturn>> => {
       error: false,
       data: res.data,
     }))
-    .catch(err => {
+    .catch((err: AxiosError<LoginReturn>) => {
       logError(err);
-      return { error: true };
+      return {
+        error: true,
+        message: err.response?.data?.message ?? 'Unknown Error',
+      };
     });
 };
 
@@ -79,9 +82,12 @@ export const getRawMaterial = (
       error: false,
       data: res.data.data,
     }))
-    .catch(err => {
+    .catch((err: AxiosError<RawMaterialReturn>) => {
       logError(err);
-      return { error: true };
+      return {
+        error: true,
+        message: err.response?.data?.message ?? 'Unknown Error',
+      };
     });
 };
 
@@ -99,8 +105,11 @@ export const getUserProfile = (): Promise<ApiReturn<User>> => {
       error: false,
       data: res.data.user,
     }))
-    .catch(err => {
+    .catch((err: AxiosError<CurrentUser>) => {
       logError(err);
-      return { error: true };
+      return {
+        error: true,
+        message: err.response?.data?.message ?? 'Unknown Error',
+      };
     });
 };
