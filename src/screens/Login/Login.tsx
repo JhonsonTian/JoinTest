@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StatusBar, Alert } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Input, Button } from 'react-native-elements';
-import { login } from 'src/api';
+import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import { useAuthContext, AuthDispatch } from 'src/context/Authentication';
+import { login, setAxiosAuthHeader } from 'src/api';
 import { styles } from './styles';
 import { Root } from '../../types';
 
@@ -13,9 +15,11 @@ type Props = {
 };
 
 export const Login: React.FC<Props> = ({ navigation }) => {
+  const [, authDispatch] = useAuthContext();
+  const { setItem } = useAsyncStorage('@token');
   const [data, setData] = useState({
-    username: '',
-    password: '',
+    username: 'Procurement Testing',
+    password: 'password',
   });
 
   const onChangeText = (key: keyof typeof data) => (value: string) =>
@@ -31,7 +35,10 @@ export const Login: React.FC<Props> = ({ navigation }) => {
     if (error) {
       Alert.alert('Login Failed');
     } else {
-      navigation?.navigate('RawList');
+      const token = resData?.access_token ?? '';
+      await setItem(token);
+      setAxiosAuthHeader(token);
+      authDispatch({ type: AuthDispatch.AUTHENTICATE });
     }
   };
 

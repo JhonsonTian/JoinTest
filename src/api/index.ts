@@ -1,10 +1,17 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getEnvironment } from 'src/utils';
-import { LoginParam, LoginReturn, ApiReturn } from './types';
+import {
+  LoginParam,
+  LoginReturn,
+  ApiReturn,
+  RawMaterial,
+  RawMaterialReturn,
+  GetRawMaterialParam,
+  User,
+  CurrentUser,
+} from './types';
+import { url } from './apiUrl';
 
-const { baseUrl } = getEnvironment();
-const LOGIN = `${baseUrl}/oauth/token`;
-const RAW_LIST = `${baseUrl}/raw-materials`;
+const { CUR_USER, LOGIN, RAW_LIST } = url;
 
 const logError = (error: AxiosError) => {
   if (error.response) {
@@ -24,6 +31,11 @@ const logError = (error: AxiosError) => {
   }
 };
 
+export const setAxiosAuthHeader = (token: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
+
 export const login = (data: LoginParam): Promise<ApiReturn<LoginReturn>> => {
   const options: AxiosRequestConfig = {
     method: 'post',
@@ -38,10 +50,54 @@ export const login = (data: LoginParam): Promise<ApiReturn<LoginReturn>> => {
       client_secret: '7NDniuscI4542dXzaUiCTN79iIuuMNiQ0wcItmxa',
     },
   };
+
   return axios(options)
     .then((res: AxiosResponse<LoginReturn>) => ({
       error: false,
       data: res.data,
+    }))
+    .catch(err => {
+      logError(err);
+      return { error: true };
+    });
+};
+
+export const getRawMaterial = (
+  params: GetRawMaterialParam,
+): Promise<ApiReturn<RawMaterial[]>> => {
+  const options: AxiosRequestConfig = {
+    method: 'get',
+    url: RAW_LIST,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    params,
+  };
+
+  return axios(options)
+    .then((res: AxiosResponse<RawMaterialReturn>) => ({
+      error: false,
+      data: res.data.data,
+    }))
+    .catch(err => {
+      logError(err);
+      return { error: true };
+    });
+};
+
+export const getUserProfile = (): Promise<ApiReturn<User>> => {
+  const options: AxiosRequestConfig = {
+    method: 'get',
+    url: CUR_USER,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  return axios(options)
+    .then((res: AxiosResponse<CurrentUser>) => ({
+      error: false,
+      data: res.data.user,
     }))
     .catch(err => {
       logError(err);
