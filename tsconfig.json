@@ -8,7 +8,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "strict": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "test-utils": ["./jest/test-utils"]
+    }
   },
   "include": ["src/**/*", "jest/**/*"]
 }

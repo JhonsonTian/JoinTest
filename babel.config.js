@@ -5,6 +5,7 @@ const plugins = [
       root: ['./'],
       alias: {
         src: './src',
+        'test-utils': './jest/test-utils',
       },
     },
   ],

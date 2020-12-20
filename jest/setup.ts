@@ -15,3 +15,12 @@ jest.mock('react-native-reanimated', () => {
 
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  useAsyncStorage(key: string) {
+    return {
+      getItem: jest.fn(() => null),
+      setItem: jest.fn(),
+    };
+  },
+}));
