@@ -5,10 +5,13 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/native": "^5.8.10",
+    "@react-navigation/stack": "^5.12.8",
     "axios": "^0.21.0",
     "expo": "~40.0.0",
     "expo-splash-screen": "~0.8.0",
@@ -16,16 +19,19 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "~0.63.4",
+    "react-native-elements": "^3.0.1",
     "react-native-gesture-handler": "~1.8.0",
     "react-native-reanimated": "~1.13.0",
+    "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.0",
     "react-native-unimodules": "~0.12.0",
-    "react-native-web": "~0.13.12",
-    "react-native-safe-area-context": "3.1.9",
-    "@react-native-community/masked-view": "0.1.10"
+    "react-native-web": "~0.13.12"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "@testing-library/jest-native": "^3.4.3",
+    "@testing-library/react-native": "^7.1.0",
+    "@types/jest": "^26.0.19",
     "@types/react": "~16.9.35",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
@@ -40,10 +46,8 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "jest-expo": "~40.0.0",
     "prettier": "^2.2.1",
+    "react-test-renderer": "^17.0.1",
     "typescript": "~4.0.0"
-  },
-  "jest": {
-    "preset": "react-native"
   },
   "private": true
 }
