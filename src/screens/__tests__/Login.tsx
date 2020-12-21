@@ -32,7 +32,7 @@ test('login and navigate to RawScreen', async () => {
   fireEvent.changeText(email, EMAIL);
   fireEvent.changeText(password, PASSWORD);
 
-  const loginButton = getByText(/login/i);
+  const loginButton = getByText(/log in/i);
   fireEvent.press(loginButton);
   await waitFor(() => {
     expect(mockLogin).toHaveBeenCalledTimes(1);

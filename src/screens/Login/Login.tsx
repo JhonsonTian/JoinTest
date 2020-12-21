@@ -18,8 +18,8 @@ export const Login: React.FC<Props> = ({ navigation }) => {
   const [, authDispatch] = useAuthContext();
   const { setItem } = useAsyncStorage('@token');
   const [data, setData] = useState({
-    username: 'Procurement Testing',
-    password: 'password',
+    username: '',
+    password: '',
   });
 
   const onChangeText = (key: keyof typeof data) => (value: string) =>
@@ -33,7 +33,7 @@ export const Login: React.FC<Props> = ({ navigation }) => {
     }
     const { error, data: resData } = await login({ username, password });
     if (error) {
-      Alert.alert('Login Failed');
+      Alert.alert('Log In Failed');
     } else {
       const token = resData?.access_token ?? '';
       await setItem(token);
@@ -58,9 +58,10 @@ export const Login: React.FC<Props> = ({ navigation }) => {
         inputContainerStyle={styles.input}
         value={data.password}
         onChangeText={onChangeText('password')}
+        secureTextEntry
       />
       <Button
-        title="Login"
+        title="Log In"
         containerStyle={styles.buttonContainer}
         buttonStyle={styles.button}
         onPress={onLoginPress}

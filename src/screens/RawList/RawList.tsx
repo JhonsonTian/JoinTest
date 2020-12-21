@@ -102,7 +102,6 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
       <View style={styles.virtualList}>
         <FlatList
           data={filteredList}
-          // extraData={materialList.length}
           renderItem={onRenderList}
           onEndReachedThreshold={0.2}
           onEndReached={onLoadMore}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
@@ -26,6 +27,7 @@ const getAuthenticationState = async () => {
 
 const RootStack: React.FC = () => {
   const [authState, authDispatch] = useAuthContext();
+  const { setItem } = useAsyncStorage('@token');
 
   useEffect(() => {
     (async () => {
@@ -38,13 +40,30 @@ const RootStack: React.FC = () => {
     })();
   }, []);
 
+  const onLogoutPress = () => {
+    setItem('');
+    authDispatch({ type: AuthDispatch.UN_AUTHENTICATE });
+  };
+
+  const getLogoutButton = () => {
+    return (
+      <Text style={styles.logout} onPress={onLogoutPress}>
+        Log Out
+      </Text>
+    );
+  };
+
   if (authState.isAuthenticated === null) return null;
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
         {authState.isAuthenticated ? (
-          <Stack.Screen name="RawList" component={RawList} />
+          <Stack.Screen
+            name="RawList"
+            component={RawList}
+            options={{ headerRight: getLogoutButton }}
+          />
         ) : (
           <Stack.Screen name="Login" component={Login} />
         )}
@@ -60,3 +79,12 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  logout: {
+    marginRight: 8,
+    fontSize: 15,
+  },
+});
