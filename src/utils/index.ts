@@ -23,7 +23,9 @@ export const getEnvironment = () => {
   if (releaseChannel.indexOf('staging') !== -1) {
     return {
       envName: 'STAGING',
-      baseUrl: 'https://staging-api.development.tastelabgroup.com/api/v1',
+      baseUrl: 'https://dev3-api.development.tastelabgroup.com/api/v1',
+      // TODO this API cannot be accessed
+      // baseUrl: 'https://staging-api.development.tastelabgroup.com/api/v1',
     };
   }
   return {};

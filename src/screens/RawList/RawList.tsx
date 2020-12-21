@@ -47,15 +47,15 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
   const onRenderList = ({ item, index }: { item: any; index: number }) => {
     const isCheck = selectedId.some(itm => itm === item.id);
     return (
-      <ListItem
-        containerStyle={styles.listContainer}
-        bottomDivider
-        onPress={onItemPress(item.id)}
-      >
+      <ListItem containerStyle={styles.listContainer} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>{item.nameEng}</ListItem.Title>
         </ListItem.Content>
-        <ListItem.CheckBox checked={isCheck} testID={`checkItem${item.id}`} />
+        <ListItem.CheckBox
+          checked={isCheck}
+          testID={`checkItem${item.id}`}
+          onPress={onItemPress(item.id)}
+        />
       </ListItem>
     );
   };
@@ -90,7 +90,7 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
   };
 
   const renderEmpty = () => (
-    <View>
+    <View style={styles.empty}>
       <Text>Empty Data</Text>
     </View>
   );

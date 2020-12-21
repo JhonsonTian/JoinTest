@@ -27,4 +27,10 @@ export const styles = StyleSheet.create({
     height: 45,
     borderBottomWidth: 0,
   },
+  empty: {
+    flex: 1,
+    paddingTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
