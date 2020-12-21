@@ -4,6 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Input, Button } from 'react-native-elements';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { useAuthContext, AuthDispatch } from 'src/context/Authentication';
+import { Loading } from 'src/components/Loading';
 import { login, setAxiosAuthHeader } from 'src/api';
 import { styles } from './styles';
 import { Root } from '../../types';
@@ -17,6 +18,7 @@ type Props = {
 export const Login: React.FC<Props> = ({ navigation }) => {
   const [, authDispatch] = useAuthContext();
   const { setItem } = useAsyncStorage('@token');
+  const [isLoading, setLoading] = useState(false);
   const [data, setData] = useState({
     username: '',
     password: '',
@@ -31,7 +33,9 @@ export const Login: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Please input required data');
       return;
     }
+    setLoading(true);
     const { error, data: resData } = await login({ username, password });
+    setLoading(false);
     if (error) {
       Alert.alert('Log In Failed');
     } else {
@@ -66,6 +70,7 @@ export const Login: React.FC<Props> = ({ navigation }) => {
         buttonStyle={styles.button}
         onPress={onLoginPress}
       />
+      <Loading show={isLoading} />
     </View>
   );
 };
