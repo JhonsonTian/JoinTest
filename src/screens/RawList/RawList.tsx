@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  Text,
+} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ListItem, Button, Input } from 'react-native-elements';
 import { getRawMaterial } from 'src/api';
@@ -83,6 +89,12 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
     return null;
   };
 
+  const renderEmpty = () => (
+    <View>
+      <Text>Empty Data</Text>
+    </View>
+  );
+
   useEffect(() => {
     (async () => {
       const { error, data, message } = await getRawMaterial({ page });
@@ -115,12 +127,14 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
           ListFooterComponent={renderFooter}
           keyExtractor={item => item.id.toString()}
           removeClippedSubviews
+          ListEmptyComponent={renderEmpty}
         />
       </View>
       <Button
         title="Submit"
         buttonStyle={styles.button}
         onPress={onSubmitPress}
+        disabled={materialList.length === 0 || selectedId.length === 0}
       />
       <Loading show={isLoading && materialList.length === 0} />
     </SafeAreaView>

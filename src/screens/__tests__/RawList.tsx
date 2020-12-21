@@ -72,3 +72,27 @@ test('navigation works correctly', async () => {
     });
   });
 });
+
+test('show empty data text and disabled submit button', async () => {
+  const mockGetRawMaterial = getRawMaterial as jest.Mock;
+  mockGetRawMaterial.mockResolvedValueOnce({ error: false, data: [] });
+  const { getByText } = render(<RawList navigation={navigation} />);
+  await waitFor(() => {
+    expect(getByText(/empty data/i)).toBeTruthy();
+    expect(getByText(/submit/i)).toBeDisabled();
+  });
+});
+
+test('disabled submit button when no selected, enabled when there are selected', async () => {
+  const mockGetRawMaterial = getRawMaterial as jest.Mock;
+  mockGetRawMaterial.mockResolvedValueOnce({ error: false, data: DATA });
+  const { getByText, getByTestId } = render(
+    <RawList navigation={navigation} />,
+  );
+  await waitFor(() => {
+    expect(getByText(/submit/i)).toBeDisabled();
+    const item2 = getByTestId('checkItem2');
+    fireEvent.press(item2);
+    expect(getByText(/submit/i)).toBeEnabled();
+  });
+});
