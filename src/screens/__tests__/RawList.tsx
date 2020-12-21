@@ -24,6 +24,8 @@ const DATA = [
   },
 ];
 
+const navigation: any = { navigate: jest.fn() };
+
 jest.mock('src/api');
 
 afterEach(() => {
@@ -44,12 +46,29 @@ test('render 3 list', async () => {
 test('render selected item correctly', async () => {
   const mockGetRawMaterial = getRawMaterial as jest.Mock;
   mockGetRawMaterial.mockResolvedValueOnce({ error: false, data: DATA });
-  const { getByTestId, debug } = render(<RawList />);
+  const { getByTestId } = render(<RawList navigation={navigation} />);
   await waitFor(() => {
     const item2 = getByTestId('checkItem2');
-    expect(item2).toBeTruthy();
     expect(item2).toHaveProp('accessibilityState', { checked: false });
     fireEvent.press(item2);
     expect(item2).toHaveProp('accessibilityState', { checked: true });
+  });
+});
+
+test('navigation works correctly', async () => {
+  const mockGetRawMaterial = getRawMaterial as jest.Mock;
+  mockGetRawMaterial.mockResolvedValueOnce({ error: false, data: DATA });
+  const { getByTestId, getByText } = render(
+    <RawList navigation={navigation} />,
+  );
+  await waitFor(() => {
+    const item2 = getByTestId('checkItem2');
+    const submit = getByText(/submit/i);
+    fireEvent.press(item2);
+    fireEvent.press(submit);
+    expect(navigation.navigate).toHaveBeenCalledTimes(1);
+    expect(navigation.navigate).toHaveBeenCalledWith('SelectedList', {
+      selectedData: [DATA[1]],
+    });
   });
 });

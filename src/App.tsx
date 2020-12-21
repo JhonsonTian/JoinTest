@@ -3,13 +3,14 @@ import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-import { Login } from './screens/Login';
 import {
   useAuthContext,
   AuthDispatch,
   AuthProvider,
 } from 'src/context/Authentication';
+import { Login } from './screens/Login';
 import { RawList } from './screens/RawList';
+import { SelectedList } from './screens/SelectedList';
 import { getUserProfile, setAxiosAuthHeader } from 'src/api';
 import { Root } from './types';
 
@@ -59,11 +60,14 @@ const RootStack: React.FC = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
         {authState.isAuthenticated ? (
-          <Stack.Screen
-            name="RawList"
-            component={RawList}
-            options={{ headerRight: getLogoutButton }}
-          />
+          <>
+            <Stack.Screen
+              name="RawList"
+              component={RawList}
+              options={{ headerRight: getLogoutButton }}
+            />
+            <Stack.Screen name="SelectedList" component={SelectedList} />
+          </>
         ) : (
           <Stack.Screen name="Login" component={Login} />
         )}

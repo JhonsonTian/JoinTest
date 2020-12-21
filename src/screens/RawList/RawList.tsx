@@ -63,6 +63,13 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
 
   const onChangeText = (value: string) => setSearch(value);
 
+  const onSubmitPress = () => {
+    const selectedData = materialList.filter(item =>
+      selectedId.includes(item.id),
+    );
+    navigation?.navigate('SelectedList', { selectedData });
+  };
+
   const renderFooter = () => {
     if (isLoading && materialList.length !== 0 && search.length === 0) {
       return (
@@ -110,7 +117,11 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
           removeClippedSubviews
         />
       </View>
-      <Button title="Submit" buttonStyle={styles.button} />
+      <Button
+        title="Submit"
+        buttonStyle={styles.button}
+        onPress={onSubmitPress}
+      />
       <Loading show={isLoading && materialList.length === 0} />
     </SafeAreaView>
   );
