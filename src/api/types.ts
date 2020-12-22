@@ -2,6 +2,7 @@ export type ApiReturn<T> = {
   error: boolean;
   data?: T;
   message?: string;
+  lastPage?: number;
 };
 
 export type LoginParam = {
@@ -19,6 +20,7 @@ export type LoginReturn = {
 
 export type GetRawMaterialParam = {
   page?: number;
+  keyword?: string;
 };
 
 type Meta = {

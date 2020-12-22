@@ -10,7 +10,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ListItem, Button, Input } from 'react-native-elements';
 import { getRawMaterial } from 'src/api';
 import { RawMaterial } from 'src/api/types';
-import { Loading } from 'src/components/Loading';
 import { Root } from '../../types';
 import { styles } from './styles';
 
@@ -22,30 +21,23 @@ type Props = {
 
 export const RawList: React.FC<Props> = ({ navigation }) => {
   const [page, setPage] = useState(1);
-  const [selectedId, setSelectedId] = useState<number[]>([]);
+  const [selected, setSelected] = useState<RawMaterial[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setLoading] = useState(true);
   const [materialList, setMaterialList] = useState<RawMaterial[]>([]);
+  const [lastPage, setLastPage] = useState(0);
 
-  const filterText = new RegExp(search, 'i');
-
-  let filteredList = materialList;
-
-  if (search !== '') {
-    filteredList = materialList.filter(item => filterText.test(item.nameEng));
-  }
-
-  const onItemPress = (id: number) => () => {
-    const isIdSelected = selectedId.some(item => item === id);
+  const onItemPress = (value: RawMaterial) => () => {
+    const isIdSelected = selected.some(item => item.id === value.id);
     if (isIdSelected) {
-      setSelectedId(prevState => prevState.filter(itm => itm !== id));
+      setSelected(prevState => prevState.filter(itm => itm.id !== value.id));
     } else {
-      setSelectedId(prevState => [...prevState, id]);
+      setSelected(prevState => [...prevState, value]);
     }
   };
 
   const onRenderList = ({ item, index }: { item: any; index: number }) => {
-    const isCheck = selectedId.some(itm => itm === item.id);
+    const isCheck = selected.some(itm => itm.id === item.id);
     return (
       <ListItem containerStyle={styles.listContainer} bottomDivider>
         <ListItem.Content>
@@ -54,30 +46,32 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
         <ListItem.CheckBox
           checked={isCheck}
           testID={`checkItem${item.id}`}
-          onPress={onItemPress(item.id)}
+          onPress={onItemPress(item)}
         />
       </ListItem>
     );
   };
 
   const onLoadMore = () => {
-    if (search === '') {
-      setLoading(true);
-      setPage(prevPage => prevPage + 1);
+    if (!isLoading) {
+      setPage(prevPage => {
+        if (prevPage + 1 > lastPage) return prevPage;
+        return prevPage + 1;
+      });
     }
   };
 
-  const onChangeText = (value: string) => setSearch(value);
+  const onChangeText = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   const onSubmitPress = () => {
-    const selectedData = materialList.filter(item =>
-      selectedId.includes(item.id),
-    );
-    navigation?.navigate('SelectedList', { selectedData });
+    navigation?.navigate('SelectedList', { selectedData: selected });
   };
 
   const renderFooter = () => {
-    if (isLoading && materialList.length !== 0 && search.length === 0) {
+    if (isLoading) {
       return (
         <ActivityIndicator
           size="small"
@@ -90,15 +84,16 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
   };
 
   const renderEmpty = () => (
-    <View style={styles.empty}>
-      <Text>Empty Data</Text>
-    </View>
+    <View style={styles.empty}>{!isLoading && <Text>Empty Data</Text>}</View>
   );
 
   useEffect(() => {
     (async () => {
-      const { error, data, message } = await getRawMaterial({ page });
-      setLoading(false);
+      setLoading(true);
+      const { error, data, message, lastPage: lPage } = await getRawMaterial({
+        page,
+        keyword: search,
+      });
       if (error) {
         console.log('GET RAW MATERIAL ERROR', message);
       } else if (page === 1 && data) {
@@ -106,8 +101,10 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
       } else if (data) {
         setMaterialList(prevState => [...prevState, ...data]);
       }
+      if (lPage) setLastPage(lPage);
+      setLoading(false);
     })();
-  }, [page]);
+  }, [page, search]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +117,7 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
       />
       <View style={styles.virtualList}>
         <FlatList
-          data={filteredList}
+          data={materialList}
           renderItem={onRenderList}
           onEndReachedThreshold={0.2}
           onEndReached={onLoadMore}
@@ -134,9 +131,8 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
         title="Submit"
         buttonStyle={styles.button}
         onPress={onSubmitPress}
-        disabled={materialList.length === 0 || selectedId.length === 0}
+        disabled={materialList.length === 0 || selected.length === 0}
       />
-      <Loading show={isLoading && materialList.length === 0} />
     </SafeAreaView>
   );
 };

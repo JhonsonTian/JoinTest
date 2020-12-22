@@ -76,11 +76,13 @@ export const getRawMaterial = (
     },
     params,
   };
+  console.log('PRINT', options.params);
 
   return axios(options)
     .then((res: AxiosResponse<RawMaterialReturn>) => ({
       error: false,
       data: res.data.data,
+      lastPage: res.data.meta.last_page,
     }))
     .catch((err: AxiosError<RawMaterialReturn>) => {
       logError(err);
