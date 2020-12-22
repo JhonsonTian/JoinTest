@@ -56,6 +56,7 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
     if (!isLoading) {
       setPage(prevPage => {
         if (prevPage + 1 > lastPage) return prevPage;
+        setLoading(true);
         return prevPage + 1;
       });
     }
@@ -71,7 +72,7 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
   };
 
   const renderFooter = () => {
-    if (isLoading) {
+    if (page !== lastPage) {
       return (
         <ActivityIndicator
           size="small"
@@ -89,7 +90,6 @@ export const RawList: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
       const { error, data, message, lastPage: lPage } = await getRawMaterial({
         page,
         keyword: search,
